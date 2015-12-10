@@ -19,10 +19,21 @@ namespace WordPressAPI
 
         private XmlRpcClient _client;
 
+        public WordPressClient(string baseUri, int blogId)
+        {
+            InitConnection(baseUri, blogId);
+        }
+
         public WordPressClient(string baseUri, string userName, string pwd, int blogId)
         {
             _userName = userName;
             _password = pwd;
+
+            InitConnection(baseUri, blogId);
+        }
+
+        private void InitConnection(string baseUri, int blogId)
+        {
             _blogId = blogId;
 
             if (!baseUri.EndsWith("/"))
@@ -34,23 +45,23 @@ namespace WordPressAPI
 
             _uri = new Uri(baseUri);
             _client = new XmlRpcClient(_uri);
-        }
 
+        }
 
         #region Posts
 
         #region GetPosts
-        public async Task<IEnumerable<WordPressPost>> GetPostsAsync(WordPressPostFilter filter = null)
+        public async Task<IEnumerable<WordPressPost>> GetPostsAsync(WordPressPostFilter filter = null, IEnumerable<WordPressField> fields = null)
         {
             return await GetPostsAsync(_blogId, filter);
         }
 
-        public async Task<IEnumerable<WordPressPost>> GetPostsAsync(int blogId, WordPressPostFilter filter = null)
+        public async Task<IEnumerable<WordPressPost>> GetPostsAsync(int blogId, WordPressPostFilter filter = null, IEnumerable<WordPressField> fields = null)
         {
             return await GetPostsAsync(blogId, _userName, _password, filter);
         }
 
-        public async Task<IEnumerable<WordPressPost>> GetPostsAsync(int blogId, string userName, string password, WordPressPostFilter filter = null)
+        public async Task<IEnumerable<WordPressPost>> GetPostsAsync(int blogId, string userName, string password, WordPressPostFilter filter = null, IEnumerable<WordPressField> fields = null)
         {
             var parms = new List<XmlRpcValue>();
 
@@ -62,6 +73,19 @@ namespace WordPressAPI
             {
                 parms.Add(XmlRpcConverter.MapFrom(filter));
             }
+
+            if(fields != null && fields.Count() > 0)
+            {
+                var arr = new XmlRpcArray();
+                
+                foreach(var field in fields)
+                {
+                    arr.Values.Add(new XmlRpcString(field.Mapping));
+                }
+
+                parms.Add(arr);
+            }
+
             try
             {
                 var results = await _client.CallRpc("wp.getPosts", parms);
@@ -83,7 +107,7 @@ namespace WordPressAPI
         }
         #endregion
 
-        #region GetPosts
+        #region GetPost
         public async Task<WordPressPost> GetPostAsync(int postId)
         {
             return await GetPostAsync(postId, _blogId);

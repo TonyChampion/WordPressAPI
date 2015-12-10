@@ -38,9 +38,11 @@
     <TargetPlatform Include="Windows, Version=8.1" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\WordPressPostHelper.cs" />
     <Compile Include="Models\WordPressAuthor.cs" />
     <Compile Include="Models\WordPressBlog.cs" />
     <Compile Include="Models\WordPressComment.cs" />
+    <Compile Include="Models\WordPressField.cs" />
     <Compile Include="Models\WordPressOption.cs" />
     <Compile Include="Models\WordPressCustomField.cs" />
     <Compile Include="Models\WordPressEnclosure.cs" />
@@ -66,8 +68,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="XmlRpcPortable">
-      <HintPath>..\..\..\App6\packages\xmlrpc.universal.0.8.6\lib\portable-win81+wpa81\XmlRpcPortable.dll</HintPath>
+    <Reference Include="XmlRpcPortable, Version=0.8.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\WPStarter.UWP\packages\xmlrpc.universal.0.8.8\lib\portable-win81+wpa81\XmlRpcPortable.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
